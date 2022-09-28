@@ -15,11 +15,11 @@ contract RariGovernor is Governor, GovernorCompatibilityBravo, GovernorVotes, Go
         GovernorTimelockControl(_timelock)
     {}
 
-    function votingDelay() public pure override returns (uint256) {
+    function votingDelay() public pure override virtual returns (uint256) {
         return 46; // 46 = 10 минут, 6575 = 1 day 
     }
 
-    function votingPeriod() public pure override returns (uint256) {
+    function votingPeriod() public pure override virtual returns (uint256) {
         return 276; // 276 = 1 час, 46027 = 1 week 
     }
 

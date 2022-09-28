@@ -17,7 +17,6 @@ function createNetwork(name) {
 
     return {
       provider: () => {
-        const { estimate } = require("@rarible/estimate-middleware")
 	      if (json.path != null) {
 	        const { createProvider: createTrezorProvider } = require("@rarible/trezor-provider")
 	        const provider = createTrezorProvider({ url: json.url, path: json.path, chainId: json.network_id })
