@@ -3,37 +3,41 @@ const RariToken = artifacts.require("RariToken.sol");
 const RariGovernor = artifacts.require("RariGovernor")
 const RariGovernorTest = artifacts.require("RariGovernorTest")
 
-const TestHelper = artifacts.require("TestHelper")
 const TimelockController = artifacts.require("TimelockController")
 const Staking = artifacts.require("Staking")
 
 contract("Governance", accounts => {
   let rari;
   let staking;
-  let governor;
-  let testHelper;
+  let governorTest;
   let timelock;
   
 	before(async () => {
     rari = await RariToken.new();
 
     staking = await Staking.new()
-    await staking.__Staking_init(rari.address)
+    await staking.__Staking_init(rari.address, 0)
 
     timelock = await TimelockController.new(0, [], [])
     
-    governor = await RariGovernorTest.new(staking.address, timelock.address)
+    governorTest = await RariGovernorTest.new()
+    await governorTest.__RariGovernor_init(staking.address, timelock.address)
 
     const PROPOSER_ROLE = await timelock.PROPOSER_ROLE()
     const EXECUTOR_ROLE = await timelock.EXECUTOR_ROLE();
-    await timelock.grantRole(PROPOSER_ROLE, governor.address)
-    await timelock.grantRole(EXECUTOR_ROLE, governor.address)
+    await timelock.grantRole(PROPOSER_ROLE, governorTest.address)
+    await timelock.grantRole(EXECUTOR_ROLE, governorTest.address)
     
-    testHelper = await TestHelper.new();
+    console.log(await governorTest.getBLock())
+    for (let i = 0; i <= 50; i ++){
+      await governorTest.incrementBlock();
+    }
+    console.log(await governorTest.getBLock())
 	})
 
 	describe("governance", () => {
   
+    
     it ("proposal", async () => {
       
       const voter1 = accounts[1]
@@ -70,10 +74,10 @@ contract("Governance", accounts => {
       const user = accounts[9];
       const amount = 1000;
 
-      const transferCalldata = await testHelper.encodeERC20Transfer(user, amount)
+      const transferCalldata = await governorTest.encodeERC20Transfer(user, amount)
 
-      console.log(await testHelper.getBLock())
-      const tx = await governor.propose(
+      console.log(await governorTest.getBLock())
+      const tx = await governorTest.propose(
         [rari.address],
         [0],
         [transferCalldata],
@@ -81,7 +85,7 @@ contract("Governance", accounts => {
       );
       const startBlock = tx.receipt.blockNumber;
 
-      const ProposalCreated = await governor.getPastEvents("ProposalCreated", {
+      const ProposalCreated = await governorTest.getPastEvents("ProposalCreated", {
         fromBlock: tx.receipt.blockNumber,
         toBlock: tx.receipt.blockNumber
       });
@@ -94,21 +98,21 @@ contract("Governance", accounts => {
         Abstain: 2
       }
 
-      await testHelper.incrementBlock()
+      await governorTest.incrementBlock()
       
-      await governor.castVote(proposalId, VoteType.For, {from: voter1})
-      await governor.castVote(proposalId, VoteType.For, {from: voter2})
+      await governorTest.castVote(proposalId, VoteType.For, {from: voter1})
+      await governorTest.castVote(proposalId, VoteType.For, {from: voter2})
       
-      console.log(await governor.proposals(proposalId))
-      console.log(await governor.quorum(startBlock)) 
+      console.log(await governorTest.proposals(proposalId))
+      console.log(await governorTest.quorum(startBlock)) 
       
       await moveToDeadLine(proposalId)
 
       assert.equal(await rari.balanceOf(user), 0)
 
-      const hashDiscr = await testHelper.hashDescription("Proposal #1: Give grant to team")
+      const hashDiscr = await governorTest.hashDescription("Proposal #1: Give grant to team")
 
-      await governor.queue(
+      await governorTest.queue(
         [rari.address],
         [0],
         [transferCalldata],
@@ -118,7 +122,7 @@ contract("Governance", accounts => {
       //console.log(await timelock.getTimestamp(proposalId))
       await new Promise((resolve) => setTimeout(resolve, 1000 * 3))
 
-      await governor.execute(
+      await governorTest.execute(
         [rari.address],
         [0],
         [transferCalldata],
@@ -133,13 +137,13 @@ contract("Governance", accounts => {
 	})
 
   async function moveToDeadLine(proposalId) {
-    let now = await testHelper.getBLock();
-    const deadline = (await governor.proposals(proposalId)).endBlock;
+    let now = await governorTest.getBLock();
+    const deadline = (await governorTest.proposals(proposalId)).endBlock;
     console.log("was:", now)
     for (now; now <= deadline; now ++){
-      await testHelper.incrementBlock();
+      await governorTest.incrementBlock();
     }
-    console.log("is:", await testHelper.getBLock())
+    console.log("is:", await governorTest.getBLock())
   }
 
 })

@@ -1,26 +1,35 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.2;
 
-import "@openzeppelin/contracts/governance/Governor.sol";
-import "@openzeppelin/contracts/governance/compatibility/GovernorCompatibilityBravo.sol";
-import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
-import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
-import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
+import "@openzeppelin/contracts-upgradeable/governance/GovernorUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/governance/compatibility/GovernorCompatibilityBravoUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorVotesUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorVotesQuorumFractionUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorTimelockControlUpgradeable.sol";
 
-contract RariGovernor is Governor, GovernorCompatibilityBravo, GovernorVotes, GovernorVotesQuorumFraction, GovernorTimelockControl {
-    constructor(IVotes _token, TimelockController _timelock)
-        Governor("RariGovernor")
-        GovernorVotes(_token)
-        GovernorVotesQuorumFraction(4)
-        GovernorTimelockControl(_timelock)
-    {}
+import "./IStaking.sol";
 
-    function votingDelay() public pure override virtual returns (uint256) {
-        return 46; // 46 = 10 минут, 6575 = 1 day 
+contract RariGovernor is GovernorUpgradeable, GovernorCompatibilityBravoUpgradeable, GovernorVotesUpgradeable, GovernorVotesQuorumFractionUpgradeable, GovernorTimelockControlUpgradeable {
+    function __RariGovernor_init(IVotesUpgradeable tokenAddress, TimelockControllerUpgradeable timelockAddress) external initializer {
+        __Governor_init("RariGovernor");
+        __GovernorCompatibilityBravo_init();
+        __GovernorVotes_init(tokenAddress);
+        __GovernorVotesQuorumFraction_init(4);
+        __GovernorTimelockControl_init(timelockAddress);
+    }
+
+    function votingDelay() public view override virtual returns (uint256) {
+        uint WEEK = IStaking(address(token)).WEEK();
+        uint startingPointWeek = IStaking(address(token)).startingPointWeek();
+
+        uint currentWeek = (block.timestamp / WEEK) - startingPointWeek;
+
+        //return the last block of the current week
+        return (currentWeek * (WEEK + 1)) - 1;
     }
 
     function votingPeriod() public pure override virtual returns (uint256) {
-        return 276; // 276 = 1 час, 46027 = 1 week 
+        return 50; // 276 = 1 час, 46027 = 1 week 
     }
 
     function proposalThreshold() public pure override returns (uint256) {
@@ -32,7 +41,7 @@ contract RariGovernor is Governor, GovernorCompatibilityBravo, GovernorVotes, Go
     function quorum(uint256 blockNumber)
         public
         view
-        override(IGovernor, GovernorVotesQuorumFraction)
+        override(IGovernorUpgradeable, GovernorVotesQuorumFractionUpgradeable)
         returns (uint256)
     {
         return super.quorum(blockNumber);
@@ -41,7 +50,7 @@ contract RariGovernor is Governor, GovernorCompatibilityBravo, GovernorVotes, Go
     function getVotes(address account, uint256 blockNumber)
         public
         view
-        override(Governor, IGovernor)
+        override(GovernorUpgradeable, IGovernorUpgradeable)
         returns (uint256)
     {
         return super.getVotes(account, blockNumber);
@@ -50,7 +59,7 @@ contract RariGovernor is Governor, GovernorCompatibilityBravo, GovernorVotes, Go
     function state(uint256 proposalId)
         public
         view
-        override(Governor, IGovernor, GovernorTimelockControl)
+        override(GovernorUpgradeable, IGovernorUpgradeable, GovernorTimelockControlUpgradeable)
         returns (ProposalState)
     {
         return super.state(proposalId);
@@ -58,7 +67,7 @@ contract RariGovernor is Governor, GovernorCompatibilityBravo, GovernorVotes, Go
 
     function propose(address[] memory targets, uint256[] memory values, bytes[] memory calldatas, string memory description)
         public
-        override(Governor, GovernorCompatibilityBravo, IGovernor)
+        override(GovernorUpgradeable, GovernorCompatibilityBravoUpgradeable, IGovernorUpgradeable)
         returns (uint256)
     {
         return super.propose(targets, values, calldatas, description);
@@ -66,14 +75,14 @@ contract RariGovernor is Governor, GovernorCompatibilityBravo, GovernorVotes, Go
 
     function _execute(uint256 proposalId, address[] memory targets, uint256[] memory values, bytes[] memory calldatas, bytes32 descriptionHash)
         internal
-        override(Governor, GovernorTimelockControl)
+        override(GovernorUpgradeable, GovernorTimelockControlUpgradeable)
     {
         super._execute(proposalId, targets, values, calldatas, descriptionHash);
     }
 
     function _cancel(address[] memory targets, uint256[] memory values, bytes[] memory calldatas, bytes32 descriptionHash)
         internal
-        override(Governor, GovernorTimelockControl)
+        override(GovernorUpgradeable, GovernorTimelockControlUpgradeable)
         returns (uint256)
     {
         return super._cancel(targets, values, calldatas, descriptionHash);
@@ -82,7 +91,7 @@ contract RariGovernor is Governor, GovernorCompatibilityBravo, GovernorVotes, Go
     function _executor()
         internal
         view
-        override(Governor, GovernorTimelockControl)
+        override(GovernorUpgradeable, GovernorTimelockControlUpgradeable)
         returns (address)
     {
         return super._executor();
@@ -91,7 +100,7 @@ contract RariGovernor is Governor, GovernorCompatibilityBravo, GovernorVotes, Go
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(Governor, IERC165, GovernorTimelockControl)
+        override(GovernorUpgradeable, IERC165Upgradeable, GovernorTimelockControlUpgradeable)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);

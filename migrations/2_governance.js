@@ -1,32 +1,58 @@
-const RariToken = artifacts.require("RariToken.sol");
-const Staking = artifacts.require("Staking");
-
-const TimelockController = artifacts.require("TimelockController")
+const RariTimelockController = artifacts.require("RariTimelockController")
 const RariGovernor = artifacts.require("RariGovernor")
 
 const { deployProxy } = require('@openzeppelin/truffle-upgrades');
 
+//todo: set actual addresses
+const mainnet = {
+	staking: "0xFca59Cd816aB1eaD66534D82bc21E7515cE441CF",
+  canceler: "0x3f46680099cF623163C96747a8ADdB85a1dA1Cd1"
+}
+const rinkeby = {
+	staking: "0xfad6072626ec68003CEA5064AdA1b42A48352d9B",
+  canceler: "0x3f46680099cF623163C96747a8ADdB85a1dA1Cd1"
+}
+const goerli = {
+	staking: "0x4A97c5A419f5492eFfcA9e9c0188d5490a9323A1",
+  canceler: "0x19d2a55F2Bd362a9e09F674B722782329F63F3fB" //
+}
+const dev = {
+	staking: "0x55eB2809896aB7414706AaCDde63e3BBb26e0BC6",
+  canceler: "0x3f46680099cF623163C96747a8ADdB85a1dA1Cd1"
+}
+const def = {
+	staking: "0x0000000000000000000000000000000000000000",
+  canceler: "0x3f46680099cF623163C96747a8ADdB85a1dA1Cd1"
+}
+
+let settings = {
+	"default": def,
+	"rinkeby": rinkeby,
+	"mainnet": mainnet,
+	"goerli": goerli,
+	"dev": dev
+};
+
+function getSettings(network) {
+	if (settings[network] !== undefined) {
+		return settings[network];
+	} else {
+		return settings["default"];
+	}
+}
+
 module.exports = async function (deployer, network, accounts) {
+  const {canceler, staking} = await getSettings(network);
 
   const admin = accounts[0]
-  const canceler = "0x3f46680099cF623163C96747a8ADdB85a1dA1Cd1"
-
-  const rari = await RariToken.deployed().catch(() => deployer.deploy(RariToken, { gas: 3000000 }));
-
-  //const staking = await deployProxy(Staking, [rari.address], { deployer, initializer: '__Staking_init' })
-  await deployer.deploy(Staking, rari.address, {gas:4000000})
-  const staking = await Staking.deployed()
-  console.log(`deployed staking at ${staking.address}`)
   
   //deploy timelock
-  const _minDelay = 1800;
-  await deployer.deploy(TimelockController, _minDelay, [], [], {gas:2000000})
-  const timeLock = await TimelockController.deployed();
+  const _minDelay = 50; //1800
+  const timeLock = await deployProxy(RariTimelockController, [_minDelay, [], []], { deployer, initializer: '__RariTimelockController_init' })
   console.log(`deployed timeLock at ${timeLock.address}`)
 
   //deploy governon
-  await deployer.deploy(RariGovernor, staking.address, timeLock.address, {gas:4500000})
-  const governor = await RariGovernor.deployed()
+  const governor = await deployProxy(RariGovernor, [staking, timeLock.address], { deployer, initializer: '__RariGovernor_init' })
   console.log(`deployed governor at ${governor.address}`)
 
   //setting roles
