@@ -23,9 +23,10 @@ contract RariGovernor is GovernorUpgradeable, GovernorCompatibilityBravoUpgradea
         uint startingPointWeek = IStaking(address(token)).startingPointWeek();
 
         uint currentWeek = (block.timestamp / WEEK) - startingPointWeek;
-
+        uint firstBlockOfTheNextWeek = (currentWeek * (WEEK + 1)) + 1;
+        
         //return the last block of the current week
-        return (currentWeek * (WEEK + 1)) - 1;
+        return firstBlockOfTheNextWeek - block.timestamp;
     }
 
     function votingPeriod() public pure override virtual returns (uint256) {
