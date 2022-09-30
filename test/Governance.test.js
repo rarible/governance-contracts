@@ -1,24 +1,27 @@
 
-const RariToken = artifacts.require("RariToken.sol");
+const TestERC20 = artifacts.require("TestERC20.sol");
 const RariGovernor = artifacts.require("RariGovernor")
 const RariGovernorTest = artifacts.require("RariGovernorTest")
 
-const TimelockController = artifacts.require("TimelockController")
+const RariTimelockController = artifacts.require("RariTimelockController")
 const Staking = artifacts.require("Staking")
 
 contract("Governance", accounts => {
-  let rari;
+  let erc20;
   let staking;
   let governorTest;
   let timelock;
+
+  let epochSize;
   
 	before(async () => {
-    rari = await RariToken.new();
+    erc20 = await TestERC20.new();
 
     staking = await Staking.new()
-    await staking.__Staking_init(rari.address, 0)
+    await staking.__Staking_init(erc20.address, 0)
 
-    timelock = await TimelockController.new(0, [], [])
+    timelock = await RariTimelockController.new()
+    await timelock.__RariTimelockController_init(0, [], [])
     
     governorTest = await RariGovernorTest.new()
     await governorTest.__RariGovernor_init(staking.address, timelock.address)
@@ -27,16 +30,35 @@ contract("Governance", accounts => {
     const EXECUTOR_ROLE = await timelock.EXECUTOR_ROLE();
     await timelock.grantRole(PROPOSER_ROLE, governorTest.address)
     await timelock.grantRole(EXECUTOR_ROLE, governorTest.address)
-    
-    console.log(await governorTest.getBLock())
-    for (let i = 0; i <= 50; i ++){
-      await governorTest.incrementBlock();
-    }
-    console.log(await governorTest.getBLock())
+
+    epochSize = await staking.WEEK()
+
+    console.log("delyay", (await governorTest.votingDelay()).toString())
+    console.log("block", (await governorTest.getBLock()).toString())
+    console.log()
+
+    await skipEpoch(epochSize)
 	})
 
 	describe("governance", () => {
-  
+    
+    it ("delay", async () => {
+      /*
+      console.log("delyay", (await governorTest.votingDelay()).toString())
+    console.log("block", (await governorTest.getBLock()).toString())
+    console.log()
+
+
+      await skipEpoch(epochSize)
+
+      console.log("delyay", (await governorTest.votingDelay()).toString())
+    console.log("block", (await governorTest.getBLock()).toString())
+    console.log()
+    */
+
+      
+    })
+    
     
     it ("proposal", async () => {
       
@@ -44,41 +66,41 @@ contract("Governance", accounts => {
       const voter2 = accounts[2]
 
       //minting and staking 1000 tokens voter1
-      await rari.mint(voter1, 1000);
-   		await rari.approve(staking.address, 1000, { from: voter1 });
+      await erc20.mint(voter1, 1000);
+   		await erc20.approve(staking.address, 1000, { from: voter1 });
 			await staking.stake(voter1, voter1, 1000, 1000, 103, { from: voter1 }); //address account, address delegate, uint amount, uint slope, uint cliff
 
-			assert.equal(await rari.balanceOf(staking.address), 1000);				//balance Lock on deposite
-  		assert.equal(await rari.balanceOf(voter1), 0);			      //tail user balance
+			assert.equal(await erc20.balanceOf(staking.address), 1000);				//balance Lock on deposite
+  		assert.equal(await erc20.balanceOf(voter1), 0);			      //tail user balance
       assert.equal(await staking.balanceOf(voter1), 1000);  
       
       //minting 2000 and staking 1000 tokens voter2
-      await rari.mint(voter2, 2000);
-   		await rari.approve(staking.address, 1000, { from: voter2 });
+      await erc20.mint(voter2, 2000);
+   		await erc20.approve(staking.address, 1000, { from: voter2 });
 			await staking.stake(voter2, voter2, 1000, 1000, 103, { from: voter2 }); //address account, address delegate, uint amount, uint slope, uint cliff
 
-			assert.equal(await rari.balanceOf(staking.address), 2000);				//balance Lock on deposite
-  		assert.equal(await rari.balanceOf(voter2), 1000);			      //tail user balance
+			assert.equal(await erc20.balanceOf(staking.address), 2000);				//balance Lock on deposite
+  		assert.equal(await erc20.balanceOf(voter2), 1000);			      //tail user balance
       assert.equal(await staking.balanceOf(voter2), 1000);  
 
       //transfer tokens to timelock
-      await rari.transfer(timelock.address, 1000, {from: voter2})
-      assert.equal(await rari.balanceOf(voter2), 0);		
-      assert.equal(await rari.balanceOf(timelock.address), 1000);		
+      await erc20.transfer(timelock.address, 1000, {from: voter2})
+      assert.equal(await erc20.balanceOf(voter2), 0);		
+      assert.equal(await erc20.balanceOf(timelock.address), 1000);		
 
       //governance
 
-      console.log(await staking.getVotes(voter1))
-      console.log(await staking.getVotes(voter2))
+      //console.log(await staking.getVotes(voter1))
+      //console.log(await staking.getVotes(voter2))
       
       const user = accounts[9];
       const amount = 1000;
 
       const transferCalldata = await governorTest.encodeERC20Transfer(user, amount)
 
-      console.log(await governorTest.getBLock())
+      //console.log(await governorTest.getBLock())
       const tx = await governorTest.propose(
-        [rari.address],
+        [erc20.address],
         [0],
         [transferCalldata],
         "Proposal #1: Give grant to team"
@@ -98,7 +120,9 @@ contract("Governance", accounts => {
         Abstain: 2
       }
 
-      await governorTest.incrementBlock()
+      await skipEpoch(50)
+
+      //console.log(await governorTest.getBLock())
       
       await governorTest.castVote(proposalId, VoteType.For, {from: voter1})
       await governorTest.castVote(proposalId, VoteType.For, {from: voter2})
@@ -108,12 +132,12 @@ contract("Governance", accounts => {
       
       await moveToDeadLine(proposalId)
 
-      assert.equal(await rari.balanceOf(user), 0)
+      assert.equal(await erc20.balanceOf(user), 0)
 
       const hashDiscr = await governorTest.hashDescription("Proposal #1: Give grant to team")
 
       await governorTest.queue(
-        [rari.address],
+        [erc20.address],
         [0],
         [transferCalldata],
         hashDiscr
@@ -123,14 +147,14 @@ contract("Governance", accounts => {
       await new Promise((resolve) => setTimeout(resolve, 1000 * 3))
 
       await governorTest.execute(
-        [rari.address],
+        [erc20.address],
         [0],
         [transferCalldata],
         hashDiscr
       );
       
 
-      assert.equal(await rari.balanceOf(user), 1000)
+      assert.equal(await erc20.balanceOf(user), 1000)
       
     })
     
@@ -145,5 +169,15 @@ contract("Governance", accounts => {
     }
     console.log("is:", await governorTest.getBLock())
   }
+
+  async function skipEpoch(epochSize) {
+    console.log("was block", (await governorTest.getBLock()).toString())
+    for (let i = 0; i < epochSize; i ++){
+      await governorTest.incrementBlock();
+    }
+    console.log("now block", (await governorTest.getBLock()).toString())
+  }
+
+
 
 })

@@ -9,12 +9,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract RariGovernorTest is RariGovernor {
 
-    function votingDelay() public pure override returns (uint256) {
-        return 0; // 46 = 10 минут, 6575 = 1 day 
-    }
-
     function votingPeriod() public pure override returns (uint256) {
-        return 10; // 276 = 1 час, 46027 = 1 week 
+        return 50; // 276 = 1 час, 46027 = 1 week 
     }
 
     function encodeERC20Transfer(address to, uint amount) external pure returns(bytes memory){
@@ -31,5 +27,13 @@ contract RariGovernorTest is RariGovernor {
 
     function hashDescription(string calldata description) external pure returns(bytes32) {
         return keccak256(bytes(description));
+    }
+
+    function WEEK() external view returns(uint) {
+      return IStaking(address(token)).WEEK();
+    }
+
+    function startingPointWeek() external view returns(uint) {
+      return IStaking(address(token)).startingPointWeek();
     }
 }

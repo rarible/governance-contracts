@@ -13,7 +13,7 @@ const rinkeby = {
   canceler: "0x3f46680099cF623163C96747a8ADdB85a1dA1Cd1"
 }
 const goerli = {
-	staking: "0x4A97c5A419f5492eFfcA9e9c0188d5490a9323A1",
+	staking: "0xD4B9A18296C952491E5D4BAa1AD95344B103c4b5",
   canceler: "0x19d2a55F2Bd362a9e09F674B722782329F63F3fB" //
 }
 const dev = {
@@ -42,6 +42,7 @@ function getSettings(network) {
 }
 
 module.exports = async function (deployer, network, accounts) {
+  
   const {canceler, staking} = await getSettings(network);
 
   const admin = accounts[0]
@@ -73,5 +74,5 @@ module.exports = async function (deployer, network, accounts) {
   //todo: uncomment
   //renounce admin role from deployer
   //await timeLock.renounceRole(TIMELOCK_ADMIN_ROLE, admin, {gas: 60000})
-
+  
 };
