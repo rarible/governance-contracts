@@ -13,7 +13,7 @@ const rinkeby = {
   canceler: "0x3f46680099cF623163C96747a8ADdB85a1dA1Cd1"
 }
 const goerli = {
-	staking: "0xD4B9A18296C952491E5D4BAa1AD95344B103c4b5",
+	staking: "0x59436A6ACfF92F6ca153cECF19d33fDEF7038557",
   canceler: "0x19d2a55F2Bd362a9e09F674B722782329F63F3fB" //
 }
 const dev = {
@@ -50,11 +50,11 @@ module.exports = async function (deployer, network, accounts) {
   //deploy timelock
   const _minDelay = 50; //1800
   const timeLock = await deployProxy(RariTimelockController, [_minDelay, [], []], { deployer, initializer: '__RariTimelockController_init' })
-  console.log(`deployed timeLock at ${timeLock.address}`)
+  console.log(`deployed timeLock at ${timeLock.address} with ${_minDelay}`)
 
   //deploy governon
   const governor = await deployProxy(RariGovernor, [staking, timeLock.address], { deployer, initializer: '__RariGovernor_init' })
-  console.log(`deployed governor at ${governor.address}`)
+  console.log(`deployed governor at ${governor.address} for ${staking}`)
 
   //setting roles
   const PROPOSER_ROLE = await timeLock.PROPOSER_ROLE()

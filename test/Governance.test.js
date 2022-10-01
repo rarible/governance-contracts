@@ -128,7 +128,7 @@ contract("Governance", accounts => {
       await governorTest.castVote(proposalId, VoteType.For, {from: voter2})
       
       console.log(await governorTest.proposals(proposalId))
-      console.log(await governorTest.quorum(startBlock)) 
+      console.log(await governorTest.quorum(startBlock + 50)) 
       
       await moveToDeadLine(proposalId)
 

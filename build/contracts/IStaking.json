@@ -13,22 +13,9 @@
       ],
       "stateMutability": "view",
       "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "startingPointWeek",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.13+commit.abaa5c0e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"WEEK\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"startingPointWeek\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/IStaking.sol\":\"IStaking\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/IStaking.sol\":{\"keccak256\":\"0x43ee6fac088837bb8420b8a5cdee6535a3bf76a2c51331a7f851bdd727a841a0\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://517d82debe738f14bbf02de1e7d87a27fb53b778dbbd0446e16f776aab55a8f6\",\"dweb:/ipfs/QmYETYTECBWdBzLN6e2y4SykFRshsVtk7xn1vP9qwomamx\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.13+commit.abaa5c0e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"WEEK\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/IStaking.sol\":\"IStaking\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/IStaking.sol\":{\"keccak256\":\"0x226ffab8ae1604f0ab65aa2b56a6aa6df9ebda8d256806507f0f2c1fbc28edca\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://0120bd82f9185535d6dd9a2e7a9dee9a0f78462fbb3a0e6990cc24e1339b019c\",\"dweb:/ipfs/Qme9sGdRL98LoDFPfuVBZFez8xFZbVnfPQiaaTMjrvSE7C\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -36,16 +23,16 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\ninterface IStaking {\n    function WEEK() external view returns (uint);\n    function startingPointWeek() external view returns (uint);\n}\n",
+  "source": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\ninterface IStaking {\n    function WEEK() external view returns (uint);\n}\n",
   "sourcePath": "/Users/ds/Documents/rarible/governance-contracts/contracts/IStaking.sol",
   "ast": {
     "absolutePath": "project:/contracts/IStaking.sol",
     "exportedSymbols": {
       "IStaking": [
-        9352
+        9347
       ]
     },
-    "id": 9353,
+    "id": 9348,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
@@ -67,9 +54,9 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "fullyImplemented": false,
-        "id": 9352,
+        "id": 9347,
         "linearizedBaseContracts": [
-          9352
+          9347
         ],
         "name": "IStaking",
         "nameLocation": "68:8:28",
@@ -124,83 +111,28 @@
               ],
               "src": "121:6:28"
             },
-            "scope": 9352,
+            "scope": 9347,
             "src": "83:45:28",
-            "stateMutability": "view",
-            "virtual": false,
-            "visibility": "external"
-          },
-          {
-            "functionSelector": "ac7ae589",
-            "id": 9351,
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "startingPointWeek",
-            "nameLocation": "142:17:28",
-            "nodeType": "FunctionDefinition",
-            "parameters": {
-              "id": 9347,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "159:2:28"
-            },
-            "returnParameters": {
-              "id": 9350,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 9349,
-                  "mutability": "mutable",
-                  "name": "",
-                  "nameLocation": "-1:-1:-1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 9351,
-                  "src": "185:4:28",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 9348,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "185:4:28",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "184:6:28"
-            },
-            "scope": 9352,
-            "src": "133:58:28",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 9353,
-        "src": "58:135:28",
+        "scope": 9348,
+        "src": "58:72:28",
         "usedErrors": []
       }
     ],
-    "src": "33:161:28"
+    "src": "33:98:28"
   },
   "legacyAST": {
     "absolutePath": "project:/contracts/IStaking.sol",
     "exportedSymbols": {
       "IStaking": [
-        9352
+        9347
       ]
     },
-    "id": 9353,
+    "id": 9348,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
@@ -222,9 +154,9 @@
         "contractDependencies": [],
         "contractKind": "interface",
         "fullyImplemented": false,
-        "id": 9352,
+        "id": 9347,
         "linearizedBaseContracts": [
-          9352
+          9347
         ],
         "name": "IStaking",
         "nameLocation": "68:8:28",
@@ -279,74 +211,19 @@
               ],
               "src": "121:6:28"
             },
-            "scope": 9352,
+            "scope": 9347,
             "src": "83:45:28",
-            "stateMutability": "view",
-            "virtual": false,
-            "visibility": "external"
-          },
-          {
-            "functionSelector": "ac7ae589",
-            "id": 9351,
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "startingPointWeek",
-            "nameLocation": "142:17:28",
-            "nodeType": "FunctionDefinition",
-            "parameters": {
-              "id": 9347,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "159:2:28"
-            },
-            "returnParameters": {
-              "id": 9350,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 9349,
-                  "mutability": "mutable",
-                  "name": "",
-                  "nameLocation": "-1:-1:-1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 9351,
-                  "src": "185:4:28",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 9348,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "185:4:28",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "184:6:28"
-            },
-            "scope": 9352,
-            "src": "133:58:28",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 9353,
-        "src": "58:135:28",
+        "scope": 9348,
+        "src": "58:72:28",
         "usedErrors": []
       }
     ],
-    "src": "33:161:28"
+    "src": "33:98:28"
   },
   "compiler": {
     "name": "solc",
@@ -354,7 +231,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.3",
-  "updatedAt": "2022-09-30T16:26:50.333Z",
+  "updatedAt": "2022-10-01T20:09:22.214Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

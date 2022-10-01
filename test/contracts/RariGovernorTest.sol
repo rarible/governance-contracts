@@ -32,8 +32,4 @@ contract RariGovernorTest is RariGovernor {
     function WEEK() external view returns(uint) {
       return IStaking(address(token)).WEEK();
     }
-
-    function startingPointWeek() external view returns(uint) {
-      return IStaking(address(token)).startingPointWeek();
-    }
 }

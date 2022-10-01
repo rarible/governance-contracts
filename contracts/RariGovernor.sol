@@ -19,14 +19,7 @@ contract RariGovernor is GovernorUpgradeable, GovernorCompatibilityBravoUpgradea
     }
 
     function votingDelay() public view override virtual returns (uint256) {
-        uint WEEK = IStaking(address(token)).WEEK();
-        uint startingPointWeek = IStaking(address(token)).startingPointWeek();
-
-        uint currentWeek = (block.number / WEEK) - startingPointWeek;
-        uint firstBlockOfTheNextWeek = ((currentWeek + 1) * WEEK) + 1;
-
-        //return the last block of the current week
-        return firstBlockOfTheNextWeek - block.number;
+        return IStaking(address(token)).WEEK();
     }
 
     function votingPeriod() public pure override virtual returns (uint256) {
