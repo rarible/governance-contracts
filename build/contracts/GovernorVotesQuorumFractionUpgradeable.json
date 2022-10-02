@@ -6453,7 +6453,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.3",
-  "updatedAt": "2022-10-01T20:09:22.134Z",
+  "updatedAt": "2022-10-02T14:30:19.870Z",
   "devdoc": {
     "details": "Extension of {Governor} for voting weight extraction from an {ERC20Votes} token and a quorum expressed as a fraction of the total supply. _Available since v4.3._",
     "errors": {

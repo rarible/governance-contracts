@@ -4910,7 +4910,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.3",
-  "updatedAt": "2022-10-01T20:09:22.125Z",
+  "updatedAt": "2022-10-02T14:30:19.859Z",
   "devdoc": {
     "details": "Interface extension that adds missing functions to the {Governor} core to provide `GovernorBravo` compatibility. _Available since v4.3._",
     "kind": "dev",
