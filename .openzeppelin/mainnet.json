@@ -1,0 +1,126 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0xDc8BaA86f136F8B0851F090a4DfFDc7b5F46688D",
+    "txHash": "0x414b923a7285279bf5d2899665afaf6c368a5ac39b1390f3d9ab63f2b4e24aed"
+  },
+  "proxies": [
+    {
+      "address": "0xaAa348b4b087475c320A24719748A2E6be1C2cc8",
+      "txHash": "0xef34dfb56ec666afc5b6c5e63984a0a31ba7f6226803affdfaef4cac7727911d",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "52da57898169fc49740f8035b6941840ec0b0ebe0947be0c6ec759a4d64b2768": {
+      "address": "0xF46e8e6fA0F048DdD76F8c6982eBD059796298B8",
+      "txHash": "0x656cdc645e364219d414a63a010895eb7d3508096cb26b98349d3548d859799e",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_uint8",
+            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "contract": "ContextUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
+          },
+          {
+            "contract": "ERC165Upgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "../@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol:41"
+          },
+          {
+            "contract": "AccessControlUpgradeable",
+            "label": "_roles",
+            "type": "t_mapping(t_bytes32,t_struct(RoleData)34_storage)",
+            "src": "../@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol:61"
+          },
+          {
+            "contract": "AccessControlUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "../@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol:259"
+          },
+          {
+            "contract": "TimelockControllerUpgradeable",
+            "label": "_timestamps",
+            "type": "t_mapping(t_bytes32,t_uint256)",
+            "src": "../@openzeppelin/contracts-upgradeable/governance/TimelockControllerUpgradeable.sol:34"
+          },
+          {
+            "contract": "TimelockControllerUpgradeable",
+            "label": "_minDelay",
+            "type": "t_uint256",
+            "src": "../@openzeppelin/contracts-upgradeable/governance/TimelockControllerUpgradeable.sol:35"
+          },
+          {
+            "contract": "TimelockControllerUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)48_storage",
+            "src": "../@openzeppelin/contracts-upgradeable/governance/TimelockControllerUpgradeable.sol:432"
+          }
+        ],
+        "types": {
+          "t_mapping(t_bytes32,t_uint256)": {
+            "label": "mapping(bytes32 => uint256)"
+          },
+          "t_bytes32": {
+            "label": "bytes32"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_array(t_uint256)48_storage": {
+            "label": "uint256[48]"
+          },
+          "t_mapping(t_bytes32,t_struct(RoleData)34_storage)": {
+            "label": "mapping(bytes32 => struct AccessControlUpgradeable.RoleData)"
+          },
+          "t_struct(RoleData)34_storage": {
+            "label": "struct AccessControlUpgradeable.RoleData",
+            "members": [
+              {
+                "label": "members",
+                "type": "t_mapping(t_address,t_bool)"
+              },
+              {
+                "label": "adminRole",
+                "type": "t_bytes32"
+              }
+            ]
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          },
+          "t_uint8": {
+            "label": "uint8"
+          }
+        }
+      }
+    }
+  }
+}

@@ -24,7 +24,7 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.0;\n\ninterface IStaking {\n    function WEEK() external view returns (uint);\n}\n",
-  "sourcePath": "/Users/ds/Documents/rarible/governance-contracts/contracts/IStaking.sol",
+  "sourcePath": "/Users/eugene/Projects/rarible/governance-contracts/contracts/IStaking.sol",
   "ast": {
     "absolutePath": "project:/contracts/IStaking.sol",
     "exportedSymbols": {
@@ -230,8 +230,8 @@
     "version": "0.8.13+commit.abaa5c0e.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.4.3",
-  "updatedAt": "2022-10-02T14:30:19.951Z",
+  "schemaVersion": "3.4.5",
+  "updatedAt": "2022-10-03T18:08:55.932Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

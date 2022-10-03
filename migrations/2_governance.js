@@ -5,7 +5,7 @@ const { deployProxy } = require('@openzeppelin/truffle-upgrades');
 
 //todo: set actual addresses
 const mainnet = {
-	staking: "0xFca59Cd816aB1eaD66534D82bc21E7515cE441CF",
+	staking: "0x096Bd9a7a2e703670088C05035e23c7a9F428496",
   canceler: "0x2A446ABAE8973A70225796AE7B461Afe77FdbED5"
 }
 const rinkeby = {
