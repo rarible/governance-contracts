@@ -128,7 +128,7 @@ contract("Governance", accounts => {
       
     })
 
-    it("cancel", async () => {
+    it("cancel + quorum", async () => {
     
     })
     

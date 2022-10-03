@@ -6,7 +6,7 @@ const { deployProxy } = require('@openzeppelin/truffle-upgrades');
 //todo: set actual addresses
 const mainnet = {
 	staking: "0xFca59Cd816aB1eaD66534D82bc21E7515cE441CF",
-  canceler: "0x3f46680099cF623163C96747a8ADdB85a1dA1Cd1"
+  canceler: "0x2A446ABAE8973A70225796AE7B461Afe77FdbED5"
 }
 const rinkeby = {
 	staking: "0xfad6072626ec68003CEA5064AdA1b42A48352d9B",
@@ -48,7 +48,7 @@ module.exports = async function (deployer, network, accounts) {
   const admin = accounts[0]
   
   //deploy timelock
-  const _minDelay = 50; //1800
+  const _minDelay = 172800; //172800 = 2 дня
   const timeLock = await deployProxy(RariTimelockController, [_minDelay, [], []], { deployer, initializer: '__RariTimelockController_init' })
   console.log(`deployed timeLock at ${timeLock.address} with ${_minDelay}`)
 

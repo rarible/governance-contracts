@@ -19,11 +19,11 @@ contract RariGovernor is GovernorUpgradeable, GovernorCompatibilityBravoUpgradea
     }
 
     function votingDelay() public view override virtual returns (uint256) {
-        return IStaking(address(token)).WEEK();
+        return 0;
     }
 
     function votingPeriod() public pure override virtual returns (uint256) {
-        return 50; // 276 = 1 час, 46027 = 1 week 
+        return 36000; // 276 = 1 час, 46027 = 1 week 
     }
 
     function proposalThreshold() public pure override returns (uint256) {
