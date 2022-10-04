@@ -9,7 +9,7 @@ const mainnet = {
   canceler: "0x2A446ABAE8973A70225796AE7B461Afe77FdbED5"
 }
 const rinkeby = {
-	staking: "0xfad6072626ec68003CEA5064AdA1b42A48352d9B",
+	staking: "0xAc8369a64e35d4778e535Ac78398f2Bb09bCa7f0",
   canceler: "0x3f46680099cF623163C96747a8ADdB85a1dA1Cd1"
 }
 const goerli = {
@@ -68,9 +68,7 @@ module.exports = async function (deployer, network, accounts) {
 
   // setting canceller
   await timeLock.grantRole(CANCELLER_ROLE, canceler, {gas: 60000})
-  //todo: delete
-  await timeLock.grantRole(TIMELOCK_ADMIN_ROLE, canceler, {gas: 60000})
-  
+
   //todo: uncomment
   //renounce admin role from deployer
   //await timeLock.renounceRole(TIMELOCK_ADMIN_ROLE, admin, {gas: 60000})
