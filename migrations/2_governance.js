@@ -12,6 +12,10 @@ const rinkeby = {
 	staking: "0xAc8369a64e35d4778e535Ac78398f2Bb09bCa7f0",
   canceler: "0x3f46680099cF623163C96747a8ADdB85a1dA1Cd1"
 }
+const polygon_mainnet = {
+	staking: "0x6DDADe353480189fe86CF8238C0CFf64414B1B18",
+  canceler: "0x19d2a55F2Bd362a9e09F674B722782329F63F3fB"
+}
 const goerli = {
 	staking: "0x59436A6ACfF92F6ca153cECF19d33fDEF7038557",
   canceler: "0x19d2a55F2Bd362a9e09F674B722782329F63F3fB" //
@@ -30,6 +34,7 @@ let settings = {
 	"rinkeby": rinkeby,
 	"mainnet": mainnet,
 	"goerli": goerli,
+	"polygon_mainnet": polygon_mainnet,
 	"dev": dev
 };
 
@@ -48,7 +53,7 @@ module.exports = async function (deployer, network, accounts) {
   const admin = accounts[0]
   
   //deploy timelock
-  const _minDelay = 172800; //172800 = 2 дня
+  const _minDelay = 300; //172800 = 2 дня
   const timeLock = await deployProxy(RariTimelockController, [_minDelay, [], []], { deployer, initializer: '__RariTimelockController_init' })
   console.log(`deployed timeLock at ${timeLock.address} with ${_minDelay}`)
 
