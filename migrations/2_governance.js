@@ -13,7 +13,7 @@ const rinkeby = {
   canceler: "0x3f46680099cF623163C96747a8ADdB85a1dA1Cd1"
 }
 const goerli = {
-	staking: "0x59436A6ACfF92F6ca153cECF19d33fDEF7038557",
+	staking: "0x6D5E228C25730502aF5ACffa2eB34956c33ad7C2",
   canceler: "0x19d2a55F2Bd362a9e09F674B722782329F63F3fB" //
 }
 const dev = {
