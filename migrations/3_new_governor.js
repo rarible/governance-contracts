@@ -48,7 +48,7 @@ module.exports = async function (deployer, network, accounts) {
   
   //deploy timelock
   const timeLock = await RariTimelockController.deployed()
-  console.log(`using timeLock at ${timeLock.address} with ${_minDelay}`)
+  console.log(`using timeLock at ${timeLock.address}`)
 
   //deploy governon
   const governor = await deployProxy(RariGovernor, [staking, timeLock.address], { deployer, initializer: '__RariGovernor_init' })
