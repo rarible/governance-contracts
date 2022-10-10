@@ -14,7 +14,7 @@ contract RariGovernor is GovernorUpgradeable, GovernorCompatibilityBravoUpgradea
         __Governor_init("RariGovernor");
         __GovernorCompatibilityBravo_init();
         __GovernorVotes_init(tokenAddress);
-        __GovernorVotesQuorumFraction_init(4);
+        __GovernorVotesQuorumFraction_init(10);
         __GovernorTimelockControl_init(timelockAddress);
     }
 
@@ -27,7 +27,7 @@ contract RariGovernor is GovernorUpgradeable, GovernorCompatibilityBravoUpgradea
     }
 
     function proposalThreshold() public pure override returns (uint256) {
-        return 0;
+        return 5000 * 1e18;
     }
 
     // The functions below are overrides required by Solidity.

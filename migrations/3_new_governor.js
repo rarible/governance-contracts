@@ -42,14 +42,13 @@ function getSettings(network) {
 
 module.exports = async function (deployer, network, accounts) {
   
-  const {canceler, staking} = await getSettings(network);
+  const { staking } = await getSettings(network);
 
   const admin = accounts[0]
   
   //deploy timelock
-  const _minDelay = 172800; //172800 = 2 дня
-  const timeLock = await deployProxy(RariTimelockController, [_minDelay, [], []], { deployer, initializer: '__RariTimelockController_init' })
-  console.log(`deployed timeLock at ${timeLock.address} with ${_minDelay}`)
+  const timeLock = await RariTimelockController.deployed()
+  console.log(`using timeLock at ${timeLock.address} with ${_minDelay}`)
 
   //deploy governon
   const governor = await deployProxy(RariGovernor, [staking, timeLock.address], { deployer, initializer: '__RariGovernor_init' })
@@ -58,18 +57,9 @@ module.exports = async function (deployer, network, accounts) {
   //setting roles
   const PROPOSER_ROLE = await timeLock.PROPOSER_ROLE()
   const EXECUTOR_ROLE = await timeLock.EXECUTOR_ROLE();
-  const CANCELLER_ROLE = await timeLock.CANCELLER_ROLE();
-  const TIMELOCK_ADMIN_ROLE = await timeLock.TIMELOCK_ADMIN_ROLE();
 
   //governon contract is proposer and executor
   await timeLock.grantRole(PROPOSER_ROLE, governor.address, {gas: 60000})
   await timeLock.grantRole(EXECUTOR_ROLE, governor.address, {gas: 60000})
 
-  // setting canceller
-  await timeLock.grantRole(CANCELLER_ROLE, canceler, {gas: 60000})
-
-  //todo: uncomment
-  //renounce admin role from deployer
-  //await timeLock.renounceRole(TIMELOCK_ADMIN_ROLE, admin, {gas: 60000})
-  
 };
