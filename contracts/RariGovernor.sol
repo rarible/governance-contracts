@@ -7,8 +7,6 @@ import "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorVotesU
 import "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorVotesQuorumFractionUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorTimelockControlUpgradeable.sol";
 
-import "./IStaking.sol";
-
 contract RariGovernor is GovernorUpgradeable, GovernorCompatibilityBravoUpgradeable, GovernorVotesUpgradeable, GovernorVotesQuorumFractionUpgradeable, GovernorTimelockControlUpgradeable {
     function __RariGovernor_init(IVotesUpgradeable tokenAddress, TimelockControllerUpgradeable timelockAddress) external initializer {
         __Governor_init("RariGovernor");
@@ -26,7 +24,7 @@ contract RariGovernor is GovernorUpgradeable, GovernorCompatibilityBravoUpgradea
         return 36000; // 276 = 1 час, 46027 = 1 week 
     }
 
-    function proposalThreshold() public pure override returns (uint256) {
+    function proposalThreshold() public pure override virtual returns (uint256) {
         return 5000 * 1e18;
     }
 
