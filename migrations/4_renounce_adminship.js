@@ -33,7 +33,7 @@ module.exports = async function (deployer, network, accounts) {
     return;
   }
 
-  const adminProxyAddress = getSettings(network)
+  const {adminProxyAddress} = getSettings(network)
 
   const admin = accounts[0]
   console.log(`deployer = ${admin}`)
