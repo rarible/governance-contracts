@@ -20753,8 +20753,8 @@
     "version": "0.8.13+commit.abaa5c0e.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.4.5",
-  "updatedAt": "2022-10-03T18:08:55.852Z",
+  "schemaVersion": "3.4.3",
+  "updatedAt": "2022-11-17T17:54:56.774Z",
   "devdoc": {
     "details": "Compatibility layer that implements GovernorBravo compatibility on to of {Governor}. This compatibility layer includes a voting system and requires a {IGovernorTimelock} compatible module to be added through inheritance. It does not include token bindings, not does it include any variable upgrade patterns. NOTE: When using this module, you may need to enable the Solidity optimizer to avoid hitting the contract size limit. _Available since v4.3._",
     "errors": {

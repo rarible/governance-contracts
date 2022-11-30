@@ -2025,8 +2025,8 @@
     "version": "0.8.13+commit.abaa5c0e.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.4.5",
-  "updatedAt": "2022-10-03T18:08:55.883Z",
+  "schemaVersion": "3.4.3",
+  "updatedAt": "2022-11-17T17:54:56.798Z",
   "devdoc": {
     "details": "Common interface for {ERC20Votes}, {ERC721Votes}, and other {Votes}-enabled contracts. _Available since v4.5._",
     "events": {
