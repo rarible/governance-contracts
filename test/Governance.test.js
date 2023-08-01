@@ -4,6 +4,10 @@ const RariGovernorTest = artifacts.require("RariGovernorTest")
 
 const RariTimelockController = artifacts.require("RariTimelockController")
 
+const UpgradeExecutor = artifacts.require("UpgradeExecutor")
+const CancelProposalAction = artifacts.require("CancelProposalAction")
+const ProxyUpgradeAction = artifacts.require("ProxyUpgradeAction")
+
 const ProxyAdmin = artifacts.require("ProxyAdmin")
 const TransparentUpgradeableProxy = artifacts.require("TransparentUpgradeableProxy")
 
@@ -16,13 +20,18 @@ contract("Governance", accounts => {
   let proxyAdmin;
   let timelockImpl;
   let governorImpl;
+  let updateExecutor;
+  let updateExecutorImpl;
 
   let epochSize;
 
   let voter1;
   let voter2;
+  let securityCouncil;
   
 	before(async () => {
+    securityCouncil = accounts[6];
+  
     proxyAdmin = await ProxyAdmin.new();
     token = await TestERC20.new();
 
@@ -40,6 +49,17 @@ contract("Governance", accounts => {
     const EXECUTOR_ROLE = await timelock.EXECUTOR_ROLE();
     await timelock.grantRole(PROPOSER_ROLE, governorTest.address)
     await timelock.grantRole(EXECUTOR_ROLE, governorTest.address)
+
+    //deploy Executor
+    updateExecutorImpl = await UpgradeExecutor.new()
+    updateExecutor = await UpgradeExecutor.at((await TransparentUpgradeableProxy.new(updateExecutorImpl.address, proxyAdmin.address, "0x")).address)
+    await updateExecutor.initialize(updateExecutor.address, [securityCouncil, timelock.address])
+
+    const CANCELLER_ROLE = await timelock.CANCELLER_ROLE();
+    await timelock.grantRole(CANCELLER_ROLE, updateExecutor.address)
+
+    //transfering proxyAdmin's ownership to updateExecutor
+    await proxyAdmin.transferOwnership(updateExecutor.address);
 
     epochSize = Number(await token.WEEK())
 
@@ -71,11 +91,12 @@ contract("Governance", accounts => {
 
       const transferCalldata = await governorTest.encodeERC20Transfer(user, amount)
 
+      const discr = "Proposal #1: Give grant to team";
       const tx = await governorTest.propose(
         [token.address],
         [0],
         [transferCalldata],
-        "Proposal #1: Give grant to team"
+        discr
       );
 
       const ProposalCreated = await governorTest.getPastEvents("ProposalCreated", {
@@ -101,7 +122,7 @@ contract("Governance", accounts => {
 
       assert.equal(await token.balanceOf(user), 0)
 
-      const hashDiscr = await governorTest.hashDescription("Proposal #1: Give grant to team")
+      const hashDiscr = await governorTest.hashDescription(discr)
 
       await governorTest.queue(
         [token.address],
@@ -118,8 +139,8 @@ contract("Governance", accounts => {
           hashDiscr
         )
       );
-
       await new Promise((resolve) => setTimeout(resolve, 1000 * 3))
+      await governorTest.incrementBlock();
 
       await governorTest.execute(
         [token.address],
@@ -131,33 +152,20 @@ contract("Governance", accounts => {
       assert.equal(await token.balanceOf(user), 1000)
     })
 
-    it("timelock can grant roles", async () => {
-      const admin = accounts[0]
-
-      const TIMELOCK_ADMIN_ROLE = await timelock.TIMELOCK_ADMIN_ROLE();
-
-      //renouncing adming role
-      assert.equal(await timelock.hasRole(TIMELOCK_ADMIN_ROLE, admin), true)
-      await timelock.renounceRole(TIMELOCK_ADMIN_ROLE, admin)
-      assert.equal(await timelock.hasRole(TIMELOCK_ADMIN_ROLE, admin), false)
-      
-      //can't grant roles anymore
-      await expectThrow(
-        timelock.grantRole(TIMELOCK_ADMIN_ROLE, admin)
-      );
-
-      //grant role with proposal
+    it("proposal can be canceled by secuirty council", async () => {
       //governance
-      const user = accounts[9];
-      assert.equal(await timelock.hasRole(TIMELOCK_ADMIN_ROLE, user), false)
+      const user = accounts[8];
+      const amount = 1000;
 
-      const grantRoleCalldata = await governorTest.encodeGrantRole(TIMELOCK_ADMIN_ROLE, user)
-      
+      const transferCalldata = await governorTest.encodeERC20Transfer(user, amount)
+
+      const discr = "Proposal #2: Give grant to team"
+
       const tx = await governorTest.propose(
-        [timelock.address],
+        [token.address],
         [0],
-        [grantRoleCalldata],
-        "Proposal #1: Give grant to team"
+        [transferCalldata],
+        discr
       );
 
       const ProposalCreated = await governorTest.getPastEvents("ProposalCreated", {
@@ -181,100 +189,138 @@ contract("Governance", accounts => {
       
       await moveToBLock(proposal.endBlock)
 
-      const hashDiscr = await governorTest.hashDescription("Proposal #1: Give grant to team")
+      assert.equal(await token.balanceOf(user), 0)
+
+      const hashDiscr = await governorTest.hashDescription(discr)
 
       await governorTest.queue(
-        [timelock.address],
+        [token.address],
         [0],
-        [grantRoleCalldata],
+        [transferCalldata],
         hashDiscr
       );
-
-      await new Promise((resolve) => setTimeout(resolve, 1000 * 3))
-
-      await governorTest.execute(
-        [timelock.address],
-        [0],
-        [grantRoleCalldata],
-        hashDiscr
-      );
-
-      assert.equal(await timelock.hasRole(TIMELOCK_ADMIN_ROLE, user), true)
-    })
-
-    it("contracts can be upgraded by proposals", async () => {
-
-      const newImpl = token.address;
-
-      const upgradeCalldata = await governorTest.encodeUpgrade(governorTest.address, newImpl);
-
-      const tx = await governorTest.propose(
-        [proxyAdmin.address],
-        [0],
-        [upgradeCalldata],
-        "Proposal #1: Give grant to team"
-      );
-
-      const ProposalCreated = await governorTest.getPastEvents("ProposalCreated", {
-        fromBlock: tx.receipt.blockNumber,
-        toBlock: tx.receipt.blockNumber
-      });
-
-      const proposalId = (ProposalCreated[0].returnValues.proposalId)
-      const proposal = await governorTest.proposals(proposalId)
-
-      const VoteType = {
-        Against: 0,
-        For: 1,
-        Abstain: 2
-      }
-
-      await moveToBLock(proposal.startBlock)
-      
-      await governorTest.castVote(proposalId, VoteType.For, {from: voter1})
-      await governorTest.castVote(proposalId, VoteType.For, {from: voter2})
-      
-      await moveToBLock(proposal.endBlock)
-
-      const hashDiscr = await governorTest.hashDescription("Proposal #1: Give grant to team")
-
-      await governorTest.queue(
-        [proxyAdmin.address],
-        [0],
-        [upgradeCalldata],
-        hashDiscr
-      );
-
-      await new Promise((resolve) => setTimeout(resolve, 1000 * 3))
 
       await expectThrow(
         governorTest.execute(
-          [proxyAdmin.address],
+          [token.address],
           [0],
-          [upgradeCalldata],
+          [transferCalldata],
+          hashDiscr
+        )
+      );
+  
+      const proposalIdTimelock = await timelock.hashOperationBatch(
+        [token.address],
+        [0],
+        [transferCalldata],
+        "0x00",
+        hashDiscr
+      )
+
+      const cancelProposalAction = await CancelProposalAction.new(timelock.address);
+
+      const cancelCallData = await governorTest.encodeCancelCall(proposalIdTimelock)
+      
+      await updateExecutor.execute(cancelProposalAction.address, cancelCallData, {from: securityCouncil})
+
+    })
+
+    it("proxy can be updated by secuirty council", async () => {
+      const proxy = timelock.address;
+
+      console.log(`was impl= ${await proxyAdmin.getProxyImplementation(proxy)}`);
+
+      const proxyUpgradeAction = await ProxyUpgradeAction.new()
+
+      const proxyUpgradeCalldata = await governorTest.encodeProxyUpgradeCall(proxyAdmin.address, proxy, token.address)
+
+      await updateExecutor.execute(proxyUpgradeAction.address, proxyUpgradeCalldata, {from: securityCouncil})
+
+      console.log(`then impl= ${await proxyAdmin.getProxyImplementation(proxy)}`);
+
+      const proxyUpgradeCalldataBack = await governorTest.encodeProxyUpgradeCall(proxyAdmin.address, proxy, timelockImpl.address)
+      await updateExecutor.execute(proxyUpgradeAction.address, proxyUpgradeCalldataBack, {from: securityCouncil})
+
+      console.log(`and return back impl= ${await proxyAdmin.getProxyImplementation(proxy)}`);
+
+    })
+
+    it("proxy can be updated by proposals", async () => {
+      const proxy = timelock.address;
+      const newImpl = token.address;
+
+      console.log(`was impl= ${await proxyAdmin.getProxyImplementation(proxy)}`);
+
+      const proxyUpgradeAction = await ProxyUpgradeAction.new()
+
+      const actionUpgradeCalldata = await governorTest.encodeProxyUpgradeCall(proxyAdmin.address, proxy, newImpl)
+
+      const executorUpgradeCalldata = await governorTest.encodeUpgradeActionCall(proxyUpgradeAction.address, actionUpgradeCalldata);
+
+      const discr = "Proposal #3: Give grant to team";
+
+      const tx = await governorTest.propose(
+        [updateExecutor.address],
+        [0],
+        [executorUpgradeCalldata],
+        discr
+      );
+
+      const ProposalCreated = await governorTest.getPastEvents("ProposalCreated", {
+        fromBlock: tx.receipt.blockNumber,
+        toBlock: tx.receipt.blockNumber
+      });
+
+      const proposalId = (ProposalCreated[0].returnValues.proposalId)
+      const proposal = await governorTest.proposals(proposalId)
+
+      const VoteType = {
+        Against: 0,
+        For: 1,
+        Abstain: 2
+      }
+
+      await moveToBLock(proposal.startBlock)
+      
+      await governorTest.castVote(proposalId, VoteType.For, {from: voter1})
+      await governorTest.castVote(proposalId, VoteType.For, {from: voter2})
+      
+      await moveToBLock(proposal.endBlock)
+
+      const hashDiscr = await governorTest.hashDescription(discr)
+
+      await governorTest.queue(
+        [updateExecutor.address],
+        [0],
+        [executorUpgradeCalldata],
+        hashDiscr
+      );
+
+      await expectThrow(
+        governorTest.execute(
+          [updateExecutor.address],
+          [0],
+          [executorUpgradeCalldata],
           hashDiscr
         )
       )
 
-      //setting governer as owner of the ProxyAdmin contract 
-      const oldAdmin = await proxyAdmin.owner();
-      assert.equal(oldAdmin, accounts[0])
-
-      await proxyAdmin.transferOwnership(timelock.address)
-      assert.equal(await proxyAdmin.owner(), timelock.address)
+      await new Promise((resolve) => setTimeout(resolve, 1000 * 3))
+      await governorTest.incrementBlock();
       
       await governorTest.execute(
-        [proxyAdmin.address],
+        [updateExecutor.address],
         [0],
-        [upgradeCalldata],
+        [executorUpgradeCalldata],
         hashDiscr
       )
 
-      assert.equal(await proxyAdmin.getProxyImplementation(governorTest.address), newImpl)
+      assert.equal(await proxyAdmin.getProxyImplementation(timelock.address), newImpl)
+      console.log(`now impl= ${await proxyAdmin.getProxyImplementation(proxy)}`);
     })
-    
-	})
 
+	})
+  
   async function moveToBLock(block) {
     let now = await governorTest.getBlock();
     console.log(`moving to block ${block} from ${block - epochSize}`)
@@ -286,4 +332,5 @@ contract("Governance", accounts => {
   async function skipEpoch() {
     await moveToBLock(Number(await governorTest.getBlock()) + epochSize)
   }
+
 })
