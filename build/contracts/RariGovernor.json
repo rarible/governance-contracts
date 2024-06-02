@@ -31328,7 +31328,7 @@
           ".2"
         ],
         "nodeType": "PragmaDirective",
-        "src": "32:23:29"
+        "src": "32:23:41"
       },
       {
         "absolutePath": "@openzeppelin/contracts-upgradeable/governance/GovernorUpgradeable.sol",
@@ -31338,7 +31338,7 @@
         "nodeType": "ImportDirective",
         "scope": 9621,
         "sourceUnit": 1733,
-        "src": "57:80:29",
+        "src": "57:80:41",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -31350,7 +31350,7 @@
         "nodeType": "ImportDirective",
         "scope": 9621,
         "sourceUnit": 3788,
-        "src": "138:112:29",
+        "src": "138:112:41",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -31362,7 +31362,7 @@
         "nodeType": "ImportDirective",
         "scope": 9621,
         "sourceUnit": 4649,
-        "src": "251:96:29",
+        "src": "251:96:41",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -31374,7 +31374,7 @@
         "nodeType": "ImportDirective",
         "scope": 9621,
         "sourceUnit": 4584,
-        "src": "348:110:29",
+        "src": "348:110:41",
         "symbolAliases": [],
         "unitAlias": ""
       },

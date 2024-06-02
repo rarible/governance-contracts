@@ -10,7 +10,7 @@ contract TestERC20 is ERC20Upgradeable {
     }
 
     function WEEK() external pure returns (uint) {
-        return 50;
+        return 10;
     }
 
     /**
