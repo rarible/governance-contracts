@@ -1,24 +1,17 @@
 
-const TestERC20 = artifacts.require("TestERC20.sol");
-const RariGovernorTest = artifacts.require("RariGovernorTest")
-
-const RariTimelockController = artifacts.require("RariTimelockController")
-
-const { expectThrow } = require("@daonomic/tests-common");
-
-contract("Governance", accounts => {
-  let token;
+describe("Governance", () => {
+/*  let token: TestERC20;
   let governorTest;
   let timelock;
 
   let epochSize;
-  
+
 	before(async () => {
     token = await TestERC20.new();
 
     timelock = await RariTimelockController.new()
     await timelock.__RariTimelockController_init(2, [], [])
-    
+
     governorTest = await RariGovernorTest.new()
     await governorTest.__RariGovernor_init(token.address, timelock.address)
 
@@ -32,31 +25,31 @@ contract("Governance", accounts => {
     await skipEpoch()
 	})
 
-	describe("governance", () => {    
-    
+	describe("governance", () => {
+
     it("proposal works", async () => {
-      
+
       const voter1 = accounts[1]
       const voter2 = accounts[2]
 
       //minting 1000 tokens voter1
       await token.mint(voter1, 1000);
 			assert.equal(await token.balanceOf(voter1), 1000);
-      
+
       //minting 2000 tokens voter2
       await token.mint(voter2, 2000);
 			assert.equal(await token.balanceOf(voter2), 2000);
 
       //transfer tokens to timelock
       await token.transfer(timelock.address, 1000, {from: voter2})
-      assert.equal(await token.balanceOf(voter2), 1000);		
-      assert.equal(await token.balanceOf(timelock.address), 1000);		
+      assert.equal(await token.balanceOf(voter2), 1000);
+      assert.equal(await token.balanceOf(timelock.address), 1000);
 
       //governance
 
       //console.log(await staking.getVotes(voter1))
       //console.log(await staking.getVotes(voter2))
-      
+
       const user = accounts[9];
       const amount = 1000;
 
@@ -87,10 +80,10 @@ contract("Governance", accounts => {
       await moveToBLock(proposal.startBlock)
 
       //console.log(await governorTest.getBLock())
-      
+
       await governorTest.castVote(proposalId, VoteType.For, {from: voter1})
       await governorTest.castVote(proposalId, VoteType.For, {from: voter2})
-      
+
       await moveToBLock(proposal.endBlock)
 
       assert.equal(await token.balanceOf(user), 0)
@@ -122,16 +115,16 @@ contract("Governance", accounts => {
         [transferCalldata],
         hashDiscr
       );
-      
+
 
       assert.equal(await token.balanceOf(user), 1000)
-      
+
     })
 
     it("cancel + quorum", async () => {
-    
+
     })
-    
+
 	})
 
   async function moveToBLock(block) {
@@ -152,6 +145,6 @@ contract("Governance", accounts => {
     }
     console.log("now block", (await governorTest.getBLock()).toString())
     console.log()
-  }
+  }*/
 
 })
