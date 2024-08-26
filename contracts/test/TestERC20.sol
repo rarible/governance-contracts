@@ -24,15 +24,15 @@ contract TestERC20 is ERC20Upgradeable {
      * @dev Returns the amount of votes that `account` had
      * at the end of the last period
      */
-    function getPastVotes(address account, uint256 blockNumber) external view returns (uint256) {
+    function getPastVotes(address account, uint256) external view returns (uint256) {
         return balanceOf(account);
     }
 
     /**
-     * @dev Returns the total supply of votes available 
+     * @dev Returns the total supply of votes available
      * at the end of the last period
      */
-    function getPastTotalSupply(uint256 blockNumber) external view returns (uint256) {
+    function getPastTotalSupply(uint256) external view returns (uint256) {
         return totalSupply();
     }
 }
