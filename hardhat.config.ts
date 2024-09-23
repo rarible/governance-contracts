@@ -20,6 +20,11 @@ const config: HardhatUserConfig = {
 			url: "http://127.0.0.1:1248",
 			chainId: 1380012617,
 			timeout: 60000,
+		},
+		arbitrum: {
+			url: "http://127.0.0.1:1248",
+			chainId: 42161,
+			timeout: 60000,
 		}
 	},
 	namedAccounts: {
