@@ -9,6 +9,9 @@ type ChainConfig = {
 const configs: Record<string, ChainConfig> = {
 	arbitrum: {
 		admin: "0x8ac412F1eB56B01ba910C71f4Fad1c7f70Efb4E5"
+	},
+	rari: {
+		admin: "0x79Ae83Bd1c1DCF8189064bF26f17c0aA9e3E4fa2" // RariGovernor
 	}
 }
 
@@ -23,8 +26,10 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
 	const _minDelay = 172_800; //172800 = 2 дня
 	const timeLock = await deploy("RariTimelockController", {
+		skipIfAlreadyDeployed: false,
 		from: deployer,
 		proxy: {
+			proxyContract: "EIP173ProxyWithReceive",
 			execute: {
 				init: {
 					methodName: "__RariTimelockController_init",
