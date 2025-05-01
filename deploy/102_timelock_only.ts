@@ -26,7 +26,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
 	const _minDelay = 172_800; //172800 = 2 дня
 	const timeLock = await deploy("RariTimelockController", {
-		skipIfAlreadyDeployed: false,
 		from: deployer,
 		proxy: {
 			proxyContract: "EIP173ProxyWithReceive",

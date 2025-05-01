@@ -25,6 +25,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 	const timeLock = await deploy("RariTimelockController", {
 		from: deployer,
 		proxy: {
+			proxyContract: "EIP173ProxyWithReceive",
 			execute: {
 				init: {
 					methodName: "__RariTimelockController_init",
@@ -40,6 +41,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 	const governor = await deploy("RariGovernor", {
 		from: deployer,
 		proxy: {
+			proxyContract: "EIP173ProxyWithReceive",
 			execute: {
 				init: {
 					methodName: "__RariGovernor_init",
