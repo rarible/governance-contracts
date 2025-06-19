@@ -1,0 +1,36 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/Split50.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.24;\n\ncontract Split50 {\n    address payable public immutable A;\n    address payable public immutable B;\n\n    error ZeroAddress();\n    error ForwardFailed();\n\n    constructor(address payable addrA, address payable addrB) payable {\n        if (addrA == address(0) || addrB == address(0)) revert ZeroAddress();\n        A = addrA;\n        B = addrB;\n    }\n\n    receive() external payable {\n        uint256 value = msg.value;\n        uint256 half  = value / 2;\n\n        (bool okA,) = A.call{value: half}(\"\");\n        if (!okA) revert ForwardFailed();\n\n        (bool okB,) = B.call{value: value - half}(\"\");\n        if (!okB) revert ForwardFailed();\n    }\n}"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "evmVersion": "paris",
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}

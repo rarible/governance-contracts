@@ -1,0 +1,100 @@
+{
+  "address": "0x11752A9A026a6DE47CEf8296BE849790341dAD24",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "addrA",
+          "type": "address"
+        },
+        {
+          "internalType": "address payable",
+          "name": "addrB",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "ForwardFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ZeroAddress",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "A",
+      "outputs": [
+        {
+          "internalType": "address payable",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "B",
+      "outputs": [
+        {
+          "internalType": "address payable",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
+    }
+  ],
+  "transactionHash": "0x7298cdd4a52052ff03cfc9a8eb20015ea80a8a9e1f1e7eb7c8102f8dfeaadaf3",
+  "receipt": {
+    "to": null,
+    "from": "0x256eFfCeA2ab308D31e318728D2615545171d85B",
+    "contractAddress": "0x11752A9A026a6DE47CEf8296BE849790341dAD24",
+    "transactionIndex": 1,
+    "gasUsed": "193218",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x14a628ef811ea6b7c2b27627faa24b8f305cd5022b6a85eff6fe2df87d9c41e3",
+    "transactionHash": "0x7298cdd4a52052ff03cfc9a8eb20015ea80a8a9e1f1e7eb7c8102f8dfeaadaf3",
+    "logs": [],
+    "blockNumber": 3023617,
+    "cumulativeGasUsed": "193218",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "0x05A9D8e65032bFdff1730b5A4a817A8b7A7A5A8c",
+    "0x90BeDbEf93120bf7E4AcDdd6171053c3A12903F0"
+  ],
+  "numDeployments": 1,
+  "solcInputHash": "73964b2b9da4cf0afd9e1e6b09d8f560",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.24+commit.e11b9ed9\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"addrA\",\"type\":\"address\"},{\"internalType\":\"address payable\",\"name\":\"addrB\",\"type\":\"address\"}],\"stateMutability\":\"payable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"ForwardFailed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ZeroAddress\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"A\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"B\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/Split50.sol\":\"Split50\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/Split50.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.24;\\n\\ncontract Split50 {\\n    address payable public immutable A;\\n    address payable public immutable B;\\n\\n    error ZeroAddress();\\n    error ForwardFailed();\\n\\n    constructor(address payable addrA, address payable addrB) payable {\\n        if (addrA == address(0) || addrB == address(0)) revert ZeroAddress();\\n        A = addrA;\\n        B = addrB;\\n    }\\n\\n    receive() external payable {\\n        uint256 value = msg.value;\\n        uint256 half  = value / 2;\\n\\n        (bool okA,) = A.call{value: half}(\\\"\\\");\\n        if (!okA) revert ForwardFailed();\\n\\n        (bool okB,) = B.call{value: value - half}(\\\"\\\");\\n        if (!okB) revert ForwardFailed();\\n    }\\n}\",\"keccak256\":\"0x56db31ccfe8a6b4592903bb80f1894e5a4b235535495b7540c1ad6ae42b3eb7c\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x60c060405260405161036d38038061036d83398101604081905261002291610090565b6001600160a01b038216158061003f57506001600160a01b038116155b1561005d5760405163d92e233d60e01b815260040160405180910390fd5b6001600160a01b039182166080521660a0526100c3565b80516001600160a01b038116811461008b57600080fd5b919050565b600080604083850312156100a357600080fd5b6100ac83610074565b91506100ba60208401610074565b90509250929050565b60805160a0516102796100f46000396000818160e20152610188015260008181604601526101d801526102796000f3fe60806040526004361061002d5760003560e01c806332e7c5bf14610176578063f446c1d0146101c657600080fd5b36610171573460006100406002836101fa565b905060007f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168260405160006040518083038185875af1925050503d80600081146100af576040519150601f19603f3d011682016040523d82523d6000602084013e6100b4565b606091505b50509050806100d65760405163096dc0e160e01b815260040160405180910390fd5b60006001600160a01b037f00000000000000000000000000000000000000000000000000000000000000001661010c848661021c565b604051600081818185875af1925050503d8060008114610148576040519150601f19603f3d011682016040523d82523d6000602084013e61014d565b606091505b505090508061016f5760405163096dc0e160e01b815260040160405180910390fd5b005b600080fd5b34801561018257600080fd5b506101aa7f000000000000000000000000000000000000000000000000000000000000000081565b6040516001600160a01b03909116815260200160405180910390f35b3480156101d257600080fd5b506101aa7f000000000000000000000000000000000000000000000000000000000000000081565b60008261021757634e487b7160e01b600052601260045260246000fd5b500490565b8181038181111561023d57634e487b7160e01b600052601160045260246000fd5b9291505056fea2646970667358221220bea7fa87ef3ff24493059b7b14ad1e3d22d605aea9058506e07c2fb3ed46e51964736f6c63430008180033",
+  "deployedBytecode": "0x60806040526004361061002d5760003560e01c806332e7c5bf14610176578063f446c1d0146101c657600080fd5b36610171573460006100406002836101fa565b905060007f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168260405160006040518083038185875af1925050503d80600081146100af576040519150601f19603f3d011682016040523d82523d6000602084013e6100b4565b606091505b50509050806100d65760405163096dc0e160e01b815260040160405180910390fd5b60006001600160a01b037f00000000000000000000000000000000000000000000000000000000000000001661010c848661021c565b604051600081818185875af1925050503d8060008114610148576040519150601f19603f3d011682016040523d82523d6000602084013e61014d565b606091505b505090508061016f5760405163096dc0e160e01b815260040160405180910390fd5b005b600080fd5b34801561018257600080fd5b506101aa7f000000000000000000000000000000000000000000000000000000000000000081565b6040516001600160a01b03909116815260200160405180910390f35b3480156101d257600080fd5b506101aa7f000000000000000000000000000000000000000000000000000000000000000081565b60008261021757634e487b7160e01b600052601260045260246000fd5b500490565b8181038181111561023d57634e487b7160e01b600052601160045260246000fd5b9291505056fea2646970667358221220bea7fa87ef3ff24493059b7b14ad1e3d22d605aea9058506e07c2fb3ed46e51964736f6c63430008180033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [],
+    "types": null
+  }
+}
